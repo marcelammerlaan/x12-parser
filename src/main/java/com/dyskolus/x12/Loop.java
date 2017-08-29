@@ -234,7 +234,7 @@ public class Loop implements Iterable<Segment> {
 	 *            name of a segment
 	 * @return {@link java.util.List}&lt;{@link Segment}&gt;
 	 */
-	public List<Segment> findSegment(String name) {
+	public List<Segment> findSegment(X12Element name) {
 		List<Segment> foundSegments = new ArrayList<Segment>();
 		for (Segment s : this.segments) {
 			if (name.equals(s.getElement(0))) {
@@ -521,7 +521,7 @@ public class Loop implements Iterable<Segment> {
 	 * @return XML String
 	 */
 	public String toXML() {
-		return this.toXML(false);
+		return this.toXML(false, false);
 	}
 
 	/**
@@ -530,16 +530,17 @@ public class Loop implements Iterable<Segment> {
 	 *
 	 * @param bRemoveTrailingEmptyElements a flag for whether or not empty
 	 *        trailing elements should be removed.
+	 * @param includeNodeType include the Java classname on XML elements
 	 * @return String the loop in XML string format.
 	 */
-	public String toXML(boolean bRemoveTrailingEmptyElements) {
+	public String toXML(boolean bRemoveTrailingEmptyElements, boolean includeNodeType) {
 		StringBuilder dump = new StringBuilder();
 		dump.append("<LOOP NAME=\"").append(this.name).append("\">");
 		for (Segment s : this.segments) {
-			dump.append(s.toXML(bRemoveTrailingEmptyElements));
+			dump.append(s.toXML(bRemoveTrailingEmptyElements, includeNodeType));
 		}
 		for (Loop l : this.childList()) {
-			dump.append(l.toXML(bRemoveTrailingEmptyElements));
+			dump.append(l.toXML(bRemoveTrailingEmptyElements, includeNodeType));
 		}
 		dump.append("</LOOP>");
 		return dump.toString();

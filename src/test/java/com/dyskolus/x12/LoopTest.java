@@ -53,7 +53,7 @@ public class LoopTest {
 	public void testAddSegmentString() {
 		Loop loop = new Loop(new Context('~', '*', ':'), "ST");
 		loop.addSegment("ST*835*000000001");
-		assertEquals("ST", loop.getSegment(0).getElement(0));
+		assertEquals("ST", loop.getSegment(0).getElement(0).toString());
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class LoopTest {
 		Segment segment = new Segment(new Context('~', '*', ':'));
 		segment.addElements("ST*835*000000001");
 		loop.addSegment(segment);
-		assertEquals("ST", loop.getSegment(0).getElement(0));
+		assertEquals("ST", loop.getSegment(0).getElement(0).toString());
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class LoopTest {
 		Segment segment = new Segment(new Context('~', '*', ':'));
 		segment.addElements("ST*835*000000001");
 		loop.addSegment(0, segment);
-		assertEquals("ST", loop.getSegment(0).getElement(0));
+		assertEquals("ST", loop.getSegment(0).getElement(0).toString());
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class LoopTest {
 		loop.addSegment("TRN*1*0000000000*1999999999");
 		loop.addSegment("DTM*111*20090915");
 		loop.addSegment(0, "ST*835*000000001");
-		assertEquals("ST", loop.getSegment(0).getElement(0));
+		assertEquals("ST", loop.getSegment(0).getElement(0).toString());
 	}
 
 	@Test
@@ -96,7 +96,7 @@ public class LoopTest {
 		Segment segment = new Segment(new Context('~', '*', ':'));
 		segment.addElements("ST*835*000000001");
 		loop.addSegment(2, "TRN*1*0000000000*1999999999");
-		assertEquals("TRN", loop.getSegment(2).getElement(0));
+		assertEquals("TRN", loop.getSegment(2).getElement(0).toString());
 	}
 
 	@Test
@@ -188,7 +188,7 @@ public class LoopTest {
 		loop.addChild("2110");
 		loop.addChild("GE");
 		loop.addChild("IEA");
-		List<Segment> segments = loop.findSegment("LX");
+		List<Segment> segments = loop.findSegment(new X12StringElement("LX"));
 		assertEquals(new Integer(2), new Integer(segments.size()));
 	}
 
@@ -236,7 +236,7 @@ public class LoopTest {
 		loop.addSegment("ST*835*000000001");
 		loop.addSegment("BPR*DATA*NOT*VALID*RANDOM*TEXT");
 		loop.addSegment("DTM*111*20090915");
-		assertEquals("DTM", loop.getSegment(2).getElement(0));
+		assertEquals("DTM", loop.getSegment(2).getElement(0).toString());
 	}
 
 	@Test
@@ -245,7 +245,7 @@ public class LoopTest {
 		loop.addSegment("ST*835*000000001");
 		loop.addSegment("BPR*DATA*NOT*VALID*RANDOM*TEXT");
 		loop.addSegment("DTM*111*20090915");
-		assertEquals("ST", loop.getSegment().getElement(0));
+		assertEquals("ST", loop.getSegment().getElement(0).toString());
 	}
 
 	@Test
@@ -395,7 +395,7 @@ public class LoopTest {
 		Segment segment = new Segment(new Context('~', '*', ':'));
 		segment.addElements("ST*835*000000001");
 		loop.setSegment(0, segment);
-		assertEquals("ST", loop.getSegment(0).getElement(0));
+		assertEquals("ST", loop.getSegment(0).getElement(0).toString());
 	}
 
 	@Test
@@ -408,7 +408,7 @@ public class LoopTest {
 		Segment segment = new Segment(new Context('~', '*', ':'));
 		segment.addElements("ST*835*000000001");
 		loop.setSegment(0, segment);
-		assertEquals("ST", loop.getSegment(0).getElement(0));
+		assertEquals("ST", loop.getSegment(0).getElement(0).toString());
 	}
 
 	@Test
@@ -419,7 +419,7 @@ public class LoopTest {
 		loop.addSegment("DTM*111*20090915");
 		loop.addSegment("NOT*THE*RIGHT*SEGMENT");
 		loop.setSegment(2, "TRN*1*0000000000*1999999999");
-		assertEquals("TRN", loop.getSegment(2).getElement(0));
+		assertEquals("TRN", loop.getSegment(2).getElement(0).toString());
 	}
 
 	@Test
@@ -449,8 +449,8 @@ public class LoopTest {
 	public void testToStringRemoveTrailingEmptyElementsTwo() {
 		Loop loop = new Loop(new Context('~', '*', ':'), "ST");
 		Segment s = loop.addSegment("ST*835*000000001***ST05");
-		s.addElement(null);
-		s.addElement(null);
+		s.addElement((X12Element)null);
+		s.addElement((X12Element)null);
 		assertEquals("ST*835*000000001***ST05~", loop.toString(true));
 	}
 
@@ -458,8 +458,8 @@ public class LoopTest {
 	public void testToStringRemoveTrailingEmptyElementsThree() {
 		Loop loop = new Loop(new Context('~', '*', ':'), "ST");
 		Segment s1 = loop.addSegment("ST1*ST101*ST102***ST105");
-		s1.addElement(null);
-		s1.addElement(null);
+		s1.addElement((X12Element)null);
+		s1.addElement((X12Element)null);
 		Segment s2 = loop.addSegment("ST2*ST201*ST202***ST205");
 		s2.addElement("");
 		s2.addElement("");	
@@ -471,7 +471,7 @@ public class LoopTest {
 		Loop loop = new Loop(new Context('~', '*', ':'), "ST");
 		loop.addSegment("ST*835*000000001");
 		assertEquals(
-				"<LOOP NAME=\"ST\"><ST><ST01><![CDATA[835]]></ST01><ST02><![CDATA[000000001]]></ST02></ST></LOOP>",
+				"<LOOP NAME=\"ST\"><ST><ST01>835</ST01><ST02>000000001</ST02></ST></LOOP>",
 				loop.toXML());
 	}
 

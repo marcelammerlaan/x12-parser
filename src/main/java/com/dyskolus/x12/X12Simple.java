@@ -145,7 +145,7 @@ public class X12Simple implements EDI, Iterable<Segment> {
 	public List<Segment> findSegment(String name) {
 		List<Segment> foundSegments = new ArrayList<Segment>();
 		for (Segment s : this.segments) {
-			if (name.equals(s.getElement(0))) {
+			if (name.equals(s.getElement(0).toString())) {
 				foundSegments.add(s);
 			}
 		}
@@ -295,27 +295,33 @@ public class X12Simple implements EDI, Iterable<Segment> {
 	
 	/**
 	 * Returns the X12 transaction in XML format. This method translates the X12
-	 * object into XML format.
-	 *
+	 * object into XML format.	 
 	 * @return XML string
 	 */
 	public String toXML() {
-		return this.toXML(false);
+		return this.toXML(false, false);
 	}
 	
 	/**
 	 * Returns the X12 transaction in XML format. This method translates the X12
 	 * object into XML format.
 	 *
+	 * WARNING: removing empty elements WILL CHANGE THE OBJECTS PERMANENTLY.
+	 *
 	 * @param bRemoveTrailingEmptyElements a flag for whether or not empty
 	 *        trailing elements should be removed.
+	 * @param includeNodeType include the Java classname for this XML element as an attribute.
 	 * @return the X12 as an XML string.
 	 */
-	public String toXML(boolean bRemoveTrailingEmptyElements) {
+	public String toXML(boolean bRemoveTrailingEmptyElements, boolean includeNodeType) {
 		StringBuilder dump = new StringBuilder();
-		dump.append("<X12>");
+		dump.append("<X12");
+		if(includeNodeType) {
+			dump.append(" type='X12Simple'");
+		}
+		dump.append(">");
 		for (Segment s : this.segments) {
-			dump.append(s.toXML(bRemoveTrailingEmptyElements));
+			dump.append(s.toXML(bRemoveTrailingEmptyElements, includeNodeType));
 		}
 		dump.append("</X12>");
 		return dump.toString();

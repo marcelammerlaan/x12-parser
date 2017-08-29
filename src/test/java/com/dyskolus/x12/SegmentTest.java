@@ -45,7 +45,7 @@ public class SegmentTest {
 		Segment s = new Segment(new Context('~', '*', ':'));
 		s.addElements("ISA", "ISA01", "ISA02");
 		assertEquals(true, s.addElement(1, "ISA00"));
-		assertEquals("ISA00", s.getElement(1));
+		assertEquals("ISA00", s.getElement(1).toString());
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public class SegmentTest {
 		Segment s = new Segment(new Context('~', '*', ':'));
 		s.addElements("ISA", "ISA01", "ISA02", "ISA04");
 		s.addCompositeElement(3, "ISA03_1", "ISA03_2", "ISA03_3");
-		assertEquals("ISA03_1:ISA03_2:ISA03_3", s.getElement(3));
+		assertEquals("ISA03_1:ISA03_2:ISA03_3", s.getElement(3).toString());
 	}
 
 	@Test
@@ -79,14 +79,14 @@ public class SegmentTest {
 	public void testGetElement() {
 		Segment s = new Segment(new Context('~', '*', ':'));
 		s.addElements("ISA", "ISA01", "ISA02", "ISA03");
-		assertEquals("ISA02", s.getElement(2));
+		assertEquals("ISA02", s.getElement(2).toString());
 	}
 
 	@Test
 	public void testGetElements() {
 		Segment s = new Segment(new Context('~', '*', ':'));
 		s.addElements("ISA", "ISA01", "ISA02", "ISA03");
-		List<String> actualElements = s.getElements();
+		List<X12Element> actualElements = s.getElements();
 		assertEquals(4, actualElements.size());
 	}
 
@@ -125,7 +125,7 @@ public class SegmentTest {
 		Segment s = new Segment(new Context('~', '*', ':'));
 		s.addElements("ISA", "ISA01", "ISA02", "ISA04", "ISA04");
 		s.setElement(3, "ISA03");
-		assertEquals("ISA03", s.getElement(3));
+		assertEquals("ISA03", s.getElement(3).toString());
 	}
 
 	@Test
@@ -133,7 +133,7 @@ public class SegmentTest {
 		Segment s = new Segment(new Context('~', '*', ':'));
 		s.addElements("ISA", "ISA01", "ISA02", "ISA04", "ISA04");
 		s.setCompositeElement(3, "ISA03_1", "ISA03_2", "ISA03_3");
-		assertEquals("ISA03_1:ISA03_2:ISA03_3", s.getElement(3));
+		assertEquals("ISA03_1:ISA03_2:ISA03_3", s.getElement(3).toString());
 	}
 
 	@Test
@@ -172,7 +172,7 @@ public class SegmentTest {
 		s.addElements("ISA", "01", "02", "03", "04");
 		s.setCompositeElement(3, "03_1", "03_2", "03_3");
 		assertEquals(
-				"<ISA><ISA01><![CDATA[01]]></ISA01><ISA02><![CDATA[02]]></ISA02><ISA03><![CDATA[03_1:03_2:03_3]]></ISA03><ISA04><![CDATA[04]]></ISA04></ISA>",
+				"<ISA><ISA01>01</ISA01><ISA02>02</ISA02><ISA03>03_1:03_2:03_3</ISA03><ISA04>04</ISA04></ISA>",
 				s.toXML());
 	}
 
@@ -182,8 +182,8 @@ public class SegmentTest {
 		s.addElements("ISA", "01", "02", "03", "04", null, null);
 		s.setCompositeElement(3, "03_1", "03_2", "03_3");
 		assertEquals(
-				"<ISA><ISA01><![CDATA[01]]></ISA01><ISA02><![CDATA[02]]></ISA02><ISA03><![CDATA[03_1:03_2:03_3]]></ISA03><ISA04><![CDATA[04]]></ISA04></ISA>",
-				s.toXML(true));
+				"<ISA><ISA01>01</ISA01><ISA02>02</ISA02><ISA03>03_1:03_2:03_3</ISA03><ISA04>04</ISA04></ISA>",
+				s.toXML(true,false));
 	}
 
 }

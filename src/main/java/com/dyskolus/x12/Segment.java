@@ -26,11 +26,11 @@ import java.util.List;
  * @author Prasad Balan
  * @version $Id: $Id
  */
-public class Segment implements Iterable<String> {
+public class Segment implements Iterable<X12Element> {
 	private static final String EMPTY_STRING = "";
 	
 	private Context context;
-	private List<String> elements = new ArrayList<String>();
+	private List<X12Element> elements = new ArrayList<X12Element>();
 
 	/**
 	 * The constructor takes a {@link Context} object as input. The context
@@ -52,7 +52,11 @@ public class Segment implements Iterable<String> {
 	 * @return boolean
 	 */
 	public boolean addElement(String e) {
-		return elements.add(e);
+		return elements.add(new X12StringElement(e));
+	}
+	
+	public boolean addElement(X12Element e) {
+		return this.elements.add(e);
 	}
 
 	/**
@@ -74,15 +78,33 @@ public class Segment implements Iterable<String> {
 	 * {@code addElements("ISA", "ISA01", "ISA02");}
 	 *
 	 * @param es elements to add.
-	 * @return boolean
+	 * @return boolean false when some values could not be added (@see java.util.Collection.add() ). Note:
+	 * all values will be tried.
 	 */
 	public boolean addElements(String... es) {
+		boolean returnValue = true;
 		for (String s : es) {
-			if (!this.elements.add(s))
-				return false;
+			X12Element ele;
+			if(s == null) {
+				ele = null;
+			} else {
+				ele = new X12StringElement(s);
+			}
+			if (!this.elements.add(ele)) {
+				returnValue = false;
+			}
 		}
-		return true;
+		return returnValue;
 	}
+	
+	public boolean addElement(X12Element... ele) {
+		boolean returnValue = true;
+		for(X12Element e : ele) {
+			returnValue |= this.elements.add(e);
+		}
+		return returnValue;
+	}
+
 
 	/**
 	 * Adds strings as a composite element to the end of the segment.
@@ -97,7 +119,7 @@ public class Segment implements Iterable<String> {
 			dump.append(s);
 			dump.append(context.getCompositeElementSeparator());
 		}
-		return this.elements.add(dump.substring(0, dump.length() - 1));
+		return this.elements.add(new X12StringElement(dump.substring(0, dump.length() - 1)));
 	}
 
 	/**
@@ -109,9 +131,13 @@ public class Segment implements Iterable<String> {
 	 * @return boolean true if element matches the element at the index provided.
 	 * @param index a int.
 	 */
-	public boolean addElement(int index, String e) {
+	public boolean addElement(int index, X12Element e) {
 		this.elements.add(index, e);
 		return elements.get(index).equals(e);
+	}
+	
+	public boolean addElement(int index, String e) {
+		return this.addElement(index, new X12StringElement(e));
 	}
 
 	/**
@@ -127,7 +153,7 @@ public class Segment implements Iterable<String> {
 			dump.append(s);
 			dump.append(context.getCompositeElementSeparator());
 		}
-		this.elements.add(index, dump.substring(0, dump.length() - 1));
+		this.elements.add(index, new X12StringElement(dump.substring(0, dump.length() - 1)));
 	}
 
 	/**
@@ -146,7 +172,7 @@ public class Segment implements Iterable<String> {
 	 *            position
 	 * @return the element at the specified position.
 	 */
-	public String getElement(int index) {
+	public X12Element getElement(int index) {
 		return elements.get(index);
 	}
 
@@ -155,7 +181,7 @@ public class Segment implements Iterable<String> {
 	 *
 	 * @return List of elements
 	 */
-	public List<String> getElements() {
+	public List<X12Element> getElements() {
 		return this.elements;
 	}
 	
@@ -165,7 +191,7 @@ public class Segment implements Iterable<String> {
 	 *
 	 * @return {@link java.util.Iterator}&lt;{@link java.lang.String}&gt;
 	 */
-	public Iterator<String> iterator() {
+	public Iterator<X12Element> iterator() {
 		return elements.iterator();
 	}
 
@@ -175,7 +201,7 @@ public class Segment implements Iterable<String> {
 	 * @param index the index at which to remove the element.
 	 * @return String element that was removed.
 	 */
-	public String removeElement(int index) {
+	public X12Element removeElement(int index) {
 		return elements.remove(index);
 	}
 
@@ -211,8 +237,12 @@ public class Segment implements Iterable<String> {
 	 * @param s
 	 *            new element with which to replace
 	 */
-	public void setElement(int index, String s) {
+	public void setElement(int index, X12Element s) {
 		elements.set(index, s);
+	}
+	
+	public void setElement(int index, String s) {
+		this.setElement(index,  new X12StringElement(s));
 	}
 
 	/**
@@ -228,7 +258,7 @@ public class Segment implements Iterable<String> {
 			dump.append(s);
 			dump.append(context.getCompositeElementSeparator());
 		}
-		elements.set(index, dump.substring(0, dump.length() - 1));
+		elements.set(index, new X12StringElement(dump.substring(0, dump.length() - 1)));
 	}
 
 	/**
@@ -247,8 +277,8 @@ public class Segment implements Iterable<String> {
 	 */
 	public String toString() {
 		StringBuilder dump = new StringBuilder();
-		for (String s : this.elements) {
-			dump.append(s);
+		for (X12Element s : this.elements) {
+			dump.append(s.toString());
 			dump.append(context.getElementSeparator());
 		}
 		if (dump.length() == 0) {
@@ -276,25 +306,14 @@ public class Segment implements Iterable<String> {
 	 * @return {@link java.lang.String} XML representation of the segment.
 	 */
 	public String toXML() {
-		StringBuilder dump = new StringBuilder();
-		dump.append("<");
-		dump.append(this.elements.get(0));
-		dump.append(">");
-		for (int i = 1; i < this.elements.size(); i++) {
-			dump.append("<");
-			dump.append(this.elements.get(0));
-			dump.append(String.format("%1$02d", i));
-			dump.append("><![CDATA[");
-			dump.append(this.elements.get(i));
-			dump.append("]]></");
-			dump.append(this.elements.get(0));
-			dump.append(String.format("%1$02d", i));
-			dump.append(">");
-		}
-		dump.append("</");
-		dump.append(this.elements.get(0));
-		dump.append(">");
-		return dump.toString();
+		return toXML(false, false);
+	}
+
+	private boolean containsXMLSpecials(X12Element x12) {
+		String string = x12.toString();
+		return string.contains("<") ||
+				string.contains(">") ||
+				string.contains("&");
 	}
 
 	/**
@@ -304,10 +323,41 @@ public class Segment implements Iterable<String> {
 	 *        trailing elements should be removed.
 	 * @return {@link java.lang.String} XML representation of the segment.
 	 */
-	public String toXML(boolean bRemoveTrailingEmptyElements) {
+	public String toXML(boolean bRemoveTrailingEmptyElements, boolean includeNodeTypes) {
 		if (bRemoveTrailingEmptyElements)
 			removeTrailingEmptyElements();
-		return this.toXML();
+		StringBuilder dump = new StringBuilder();
+		dump.append("<");
+		dump.append(this.elements.get(0));
+		if(includeNodeTypes) {
+			dump.append(" type='Segment'");
+		}
+		dump.append(">");
+		for (int i = 1; i < this.elements.size(); i++) {
+			dump.append("<");
+			dump.append(this.elements.get(0));			
+			dump.append(String.format("%1$02d", i));
+			if(includeNodeTypes) {
+				dump.append(" type='"+this.elements.get(0).getClass().getSimpleName()+"'");
+			}
+			// Dont's spray CDATA all over the place.
+			if(containsXMLSpecials(this.elements.get(i))) {
+				dump.append("><![CDATA[");
+				dump.append(this.elements.get(i));
+				dump.append("]]></");
+			} else {
+				dump.append(">");
+				dump.append(this.elements.get(i));
+				dump.append("</");
+			}
+			dump.append(this.elements.get(0));
+			dump.append(String.format("%1$02d", i));
+			dump.append(">");
+		}
+		dump.append("</");
+		dump.append(this.elements.get(0));
+		dump.append(">");
+		return dump.toString();
 	}
 
 }

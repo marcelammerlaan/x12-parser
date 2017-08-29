@@ -143,13 +143,13 @@ public class X12SimpleParserSpecialCharsTest {
 
 		X12Simple x12 = (X12Simple) parser.parse(f1);
 		Segment st = x12.getSegment(2);
-		String start_st = st.getElement(0);
-		String type_st = st.getElement(1);
+		X12Element start_st = st.getElement(0);
+		X12Element type_st = st.getElement(1);
 
 		List<Segment> geSegments = x12.findSegment("GE");
 		Segment ge = geSegments.get(0);
-		String start_gs = ge.getElement(0);
-		String count_gs = ge.getElement(1);
+		X12Element start_gs = ge.getElement(0);
+		X12Element count_gs = ge.getElement(1);
 
 		assertEquals("ST", start_st);
 		assertEquals("835", type_st);
@@ -168,13 +168,13 @@ public class X12SimpleParserSpecialCharsTest {
 
 		X12Simple x12 = (X12Simple) parser.parse(f1);
 		Segment st = x12.getSegment(2);
-		String start_st = st.getElement(0);
-		String type_st = st.getElement(1);
+		X12Element start_st = st.getElement(0);
+		X12Element type_st = st.getElement(1);
 
 		List<Segment> geSegments = x12.findSegment("GE");
 		Segment ge = geSegments.get(0);
-		String start_gs = ge.getElement(0);
-		String count_gs = ge.getElement(1);
+		X12Element start_gs = ge.getElement(0);
+		X12Element count_gs = ge.getElement(1);
 
 		assertEquals("ST", start_st);
 		assertEquals("852", type_st);
