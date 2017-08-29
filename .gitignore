@@ -21,3 +21,7 @@ target/
 
 #VirtualEnv for Sphinx
 .env/
+/.classpath
+/.project
+/bin/
+/.settings/
