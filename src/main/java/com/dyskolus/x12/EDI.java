@@ -14,26 +14,14 @@
    limitations under the License.
 
  */
-package com.yarsquidy.x12;
+package com.dyskolus.x12;
 
 /**
- * The X12 class is the object representation of an ANSI X12
- * transaction. The building block of an X12 transaction is an element. Some
- * elements may be made of sub elements. Elements combine to form segments.
- * Segments are grouped as loops. And a set of loops form an X12 transaction.
+ * <p>EDI interface.</p>
  *
- * @author Prasad Balan
+ * @author colwellr
  * @version $Id: $Id
  */
-public class X12 extends Loop implements EDI {
-
-	/**
-	 * The constructor takes a context object.
-	 *
-	 * @param c
-	 *            a Context object
-	 */
-	public X12(Context c) {
-		super(c, "X12");
-	}
+public interface EDI {
+	
 }

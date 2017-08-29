@@ -14,31 +14,26 @@
    limitations under the License.
 
  */
-package com.yarsquidy.x12;
+package com.dyskolus.x12;
 
 /**
- * This class represents the format errors in the X12 transaction that is being
- * read to construct the X12 object.
+ * The X12 class is the object representation of an ANSI X12
+ * transaction. The building block of an X12 transaction is an element. Some
+ * elements may be made of sub elements. Elements combine to form segments.
+ * Segments are grouped as loops. And a set of loops form an X12 transaction.
  *
  * @author Prasad Balan
  * @version $Id: $Id
  */
-public class FormatException extends Exception {
-	private static final long serialVersionUID = 1L;
+public class X12 extends Loop implements EDI {
 
 	/**
-	 * Constructs a default FormatException
+	 * The constructor takes a context object.
+	 *
+	 * @param c
+	 *            a Context object
 	 */
-	public FormatException(){
-		super();
+	public X12(Context c) {
+		super(c, "X12");
 	}
-
-	/**
-	 * Constructs a FormatException.
-	 * @param message the message for the exception.
-	 */
-	public FormatException(String message){
-		super(message);
-	}
-
 }

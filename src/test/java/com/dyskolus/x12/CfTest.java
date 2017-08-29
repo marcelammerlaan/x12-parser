@@ -1,4 +1,4 @@
-package com.yarsquidy.x12;
+package com.dyskolus.x12;
 
 import static org.junit.Assert.*;
 
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+
+import com.dyskolus.x12.Cf;
 
 public class CfTest {
 

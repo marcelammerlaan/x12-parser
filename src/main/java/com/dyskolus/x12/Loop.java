@@ -14,7 +14,7 @@
    limitations under the License.
 
  */
-package com.yarsquidy.x12;
+package com.dyskolus.x12;
 
 import java.util.Iterator;
 import java.util.List;

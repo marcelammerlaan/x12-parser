@@ -1,4 +1,4 @@
-package com.yarsquidy.x12;
+package com.dyskolus.x12;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,12 @@ import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.dyskolus.x12.FormatException;
+import com.dyskolus.x12.Parser;
+import com.dyskolus.x12.Segment;
+import com.dyskolus.x12.X12Simple;
+import com.dyskolus.x12.X12SimpleParser;
 
 public class X12SimpleParserSpecialCharsTest {
 

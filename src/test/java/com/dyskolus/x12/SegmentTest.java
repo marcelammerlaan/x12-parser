@@ -1,8 +1,11 @@
-package com.yarsquidy.x12;
+package com.dyskolus.x12;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import com.dyskolus.x12.Context;
+import com.dyskolus.x12.Segment;
 
 import java.util.List;
 

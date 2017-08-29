@@ -14,7 +14,7 @@
    limitations under the License.
 
  */
-package com.yarsquidy.x12;
+package com.dyskolus.x12;
 
 /**
  * The class represents an X12 context. A X12 context consists of a segment
