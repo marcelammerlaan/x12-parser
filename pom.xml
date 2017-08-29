@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.yarsquidy</groupId>
+	<groupId>com.dyskolus</groupId>
 	<artifactId>x12-parser</artifactId>
 	<version>2.0.1-SNAPSHOT</version>
 	<name>x12-parser</name>
@@ -13,6 +13,12 @@
 			<organization>Yar Squidy</organization>
 			<organizationUrl>http://ryancolwell.com</organizationUrl>
 		</developer>
+		<developer>
+			<name>Marcel Ammerlaan</name>
+			<email>marcel-git@dyskolus.com</email>
+			<organization>Dyskolus</organization>
+			<organizationUrl>http://www.dyskolus.com</organizationUrl>
+		</developer>
 	</developers>
 	<licenses>
 		<license>
@@ -21,10 +27,11 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:git:git@github.com:ryanco/x12-parser.git</connection>
-		<developerConnection>scm:git:git@github.com:ryanco/x12-parser.git</developerConnection>
-		<url>git@github.com:ryanco/x12-parser.git</url>
+		<connection>scm:git:git@github.com:marcelammerlaan/x12-parser.git</connection>
+		<developerConnection>scm:git:git@github.com:marcelammerlaan/x12-parser.git</developerConnection>
+		<url>git@github.com:marcelammerlaan/x12-parser.git</url>
 	</scm>
+	<!-- 
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -35,13 +42,9 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
+	 -->
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.3</version>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
