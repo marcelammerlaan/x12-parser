@@ -30,7 +30,8 @@ public class Segment implements Iterable<X12Element> {
 	private static final String EMPTY_STRING = "";
 	
 	private Context context;
-	private List<X12Element> elements = new ArrayList<X12Element>();
+	/** Element 0 in the segment list is the segment name */
+	private List<X12Element> elements_ = new ArrayList<X12Element>();
 
 	/**
 	 * The constructor takes a {@link Context} object as input. The context
@@ -42,7 +43,12 @@ public class Segment implements Iterable<X12Element> {
 	public Segment(Context c) {
 		this.context = c;
 	}
-
+	
+	public Segment(Context c, X12Element segmentName) {
+		this(c);
+		this.addElement(segmentName);
+	}
+	
 	/**
 	 * Adds {@link java.lang.String} element to the segment. The element is added at
 	 * the end of the elements in the current segment.
@@ -52,11 +58,11 @@ public class Segment implements Iterable<X12Element> {
 	 * @return boolean
 	 */
 	public boolean addElement(String e) {
-		return elements.add(new X12StringElement(e));
+		return getElements().add(new X12StringElement(e));
 	}
 	
 	public boolean addElement(X12Element e) {
-		return this.elements.add(e);
+		return this.getElements().add(e);
 	}
 
 	/**
@@ -90,7 +96,7 @@ public class Segment implements Iterable<X12Element> {
 			} else {
 				ele = new X12StringElement(s);
 			}
-			if (!this.elements.add(ele)) {
+			if (!this.getElements().add(ele)) {
 				returnValue = false;
 			}
 		}
@@ -100,7 +106,7 @@ public class Segment implements Iterable<X12Element> {
 	public boolean addElement(X12Element... ele) {
 		boolean returnValue = true;
 		for(X12Element e : ele) {
-			returnValue |= this.elements.add(e);
+			returnValue |= this.getElements().add(e);
 		}
 		return returnValue;
 	}
@@ -119,7 +125,7 @@ public class Segment implements Iterable<X12Element> {
 			dump.append(s);
 			dump.append(context.getCompositeElementSeparator());
 		}
-		return this.elements.add(new X12StringElement(dump.substring(0, dump.length() - 1)));
+		return this.getElements().add(new X12StringElement(dump.substring(0, dump.length() - 1)));
 	}
 
 	/**
@@ -132,8 +138,8 @@ public class Segment implements Iterable<X12Element> {
 	 * @param index a int.
 	 */
 	public boolean addElement(int index, X12Element e) {
-		this.elements.add(index, e);
-		return elements.get(index).equals(e);
+		this.getElements().add(index, e);
+		return getElements().get(index).equals(e);
 	}
 	
 	public boolean addElement(int index, String e) {
@@ -148,12 +154,7 @@ public class Segment implements Iterable<X12Element> {
 	 * @param index a int.
 	 */
 	public void addCompositeElement(int index, String... ces) {
-		StringBuilder dump = new StringBuilder();
-		for (String s : ces) {
-			dump.append(s);
-			dump.append(context.getCompositeElementSeparator());
-		}
-		this.elements.add(index, new X12StringElement(dump.substring(0, dump.length() - 1)));
+		this.getElements().add(index, new X12CompositeElement(this.context, ces));
 	}
 
 	/**
@@ -173,7 +174,7 @@ public class Segment implements Iterable<X12Element> {
 	 * @return the element at the specified position.
 	 */
 	public X12Element getElement(int index) {
-		return elements.get(index);
+		return getElements().get(index);
 	}
 
 	/**
@@ -182,7 +183,7 @@ public class Segment implements Iterable<X12Element> {
 	 * @return List of elements
 	 */
 	public List<X12Element> getElements() {
-		return this.elements;
+		return this.elements_;
 	}
 	
 	/**
@@ -192,7 +193,7 @@ public class Segment implements Iterable<X12Element> {
 	 * @return {@link java.util.Iterator}&lt;{@link java.lang.String}&gt;
 	 */
 	public Iterator<X12Element> iterator() {
-		return elements.iterator();
+		return getElements().iterator();
 	}
 
 	/**
@@ -202,16 +203,16 @@ public class Segment implements Iterable<X12Element> {
 	 * @return String element that was removed.
 	 */
 	public X12Element removeElement(int index) {
-		return elements.remove(index);
+		return getElements().remove(index);
 	}
 
 	/**
 	 * Removes empty and null elements at the end of segment 
 	 */
 	private void removeTrailingEmptyElements() {
-		for (int i = elements.size() - 1; i >= 0; i--) {
-			if (elements.get(i) == null || elements.get(i).length() == 0) {
-				elements.remove(i);
+		for (int i = getElements().size() - 1; i >= 0; i--) {
+			if (getElements().get(i) == null || getElements().get(i).length() == 0) {
+				getElements().remove(i);
 			} else {
 				break;
 			}
@@ -238,7 +239,7 @@ public class Segment implements Iterable<X12Element> {
 	 *            new element with which to replace
 	 */
 	public void setElement(int index, X12Element s) {
-		elements.set(index, s);
+		getElements().set(index, s);
 	}
 	
 	public void setElement(int index, String s) {
@@ -258,7 +259,7 @@ public class Segment implements Iterable<X12Element> {
 			dump.append(s);
 			dump.append(context.getCompositeElementSeparator());
 		}
-		elements.set(index, new X12StringElement(dump.substring(0, dump.length() - 1)));
+		getElements().set(index, new X12StringElement(dump.substring(0, dump.length() - 1)));
 	}
 
 	/**
@@ -267,7 +268,7 @@ public class Segment implements Iterable<X12Element> {
 	 * @return size
 	 */
 	public int size() {
-		return elements.size();
+		return getElements().size();
 	}
 
 	/**
@@ -277,14 +278,20 @@ public class Segment implements Iterable<X12Element> {
 	 */
 	public String toString() {
 		StringBuilder dump = new StringBuilder();
-		for (X12Element s : this.elements) {
-			dump.append(s.toString());
-			dump.append(context.getElementSeparator());
+		for (X12Element s : this.getElements()) {
+			if(s != null) { // Surpress empty elements.
+				if(s instanceof X12CompositeElement) {
+					dump.append(((X12CompositeElement)s).toString());
+				} else {
+					dump.append(s.toString());				
+				}
+				dump.append(context.getElementSeparator());
+			}
 		}
 		if (dump.length() == 0) {
 			return EMPTY_STRING;
 		}
-		return dump.substring(0, dump.length() - 1);
+		return dump.substring(0, dump.length() - 1); // TODO: length()-1: strip of the last char. Could do it with a different loop condition for clarity.
 	}
 
 	/**
@@ -328,34 +335,34 @@ public class Segment implements Iterable<X12Element> {
 			removeTrailingEmptyElements();
 		StringBuilder dump = new StringBuilder();
 		dump.append("<");
-		dump.append(this.elements.get(0));
+		dump.append(this.getElements().get(0));
 		if(includeNodeTypes) {
 			dump.append(" type='Segment'");
 		}
 		dump.append(">");
-		for (int i = 1; i < this.elements.size(); i++) {
+		for (int i = 1; i < this.getElements().size(); i++) {
 			dump.append("<");
-			dump.append(this.elements.get(0));			
+			dump.append(this.getElements().get(0));			
 			dump.append(String.format("%1$02d", i));
 			if(includeNodeTypes) {
-				dump.append(" type='"+this.elements.get(0).getClass().getSimpleName()+"'");
+				dump.append(" type='"+this.getElements().get(0).getClass().getSimpleName()+"'");
 			}
 			// Dont's spray CDATA all over the place.
-			if(containsXMLSpecials(this.elements.get(i))) {
+			if(containsXMLSpecials(this.getElements().get(i))) {
 				dump.append("><![CDATA[");
-				dump.append(this.elements.get(i));
+				dump.append(this.getElements().get(i));
 				dump.append("]]></");
 			} else {
 				dump.append(">");
-				dump.append(this.elements.get(i));
+				dump.append(this.getElements().get(i));
 				dump.append("</");
 			}
-			dump.append(this.elements.get(0));
+			dump.append(this.getElements().get(0));
 			dump.append(String.format("%1$02d", i));
 			dump.append(">");
 		}
 		dump.append("</");
-		dump.append(this.elements.get(0));
+		dump.append(this.getElements().get(0));
 		dump.append(">");
 		return dump.toString();
 	}
