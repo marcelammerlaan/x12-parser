@@ -76,15 +76,19 @@ public class X12Simple implements EDI, Iterable<Segment> {
 
 	/**
 	 * Takes a {@link Segment} and adds the segment to the end of the X12
-	 * transaction.
+	 * transaction. If the Segment is null, nothing is done.
 	 *
 	 * @param segment
 	 *            {@link Segment} representation of the Segment.
 	 * @return a new Segment object
 	 */
 	public Segment addSegment(Segment segment) {
-		segments.add(segment);
-		return segment;
+		if(segment == null) {
+			return null;
+		} else {
+			segments.add(segment);
+			return segment;
+		}
 	}
 
 	/**

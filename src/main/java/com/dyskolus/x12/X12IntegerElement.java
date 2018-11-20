@@ -27,4 +27,8 @@ public class X12IntegerElement implements X12Element {
 	public int length() {
 		return this.toString().length();
 	}
+	
+	public static X12IntegerElement x12(int i) {
+		return new X12IntegerElement(i);
+	}
 }

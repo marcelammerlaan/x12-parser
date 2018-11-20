@@ -26,7 +26,7 @@ import java.util.List;
  * @author Prasad Balan
  * @version $Id: $Id
  */
-public class Segment implements Iterable<X12Element> {
+public class Segment implements Iterable<X12Element>, X12Element {
 	private static final String EMPTY_STRING = "";
 	
 	private Context context;
@@ -62,7 +62,7 @@ public class Segment implements Iterable<X12Element> {
 	}
 	
 	public boolean addElement(X12Element e) {
-		return this.getElements().add(e);
+		return this.elements_.add(e);
 	}
 
 	/**
@@ -284,9 +284,9 @@ public class Segment implements Iterable<X12Element> {
 					dump.append(((X12CompositeElement)s).toString());
 				} else {
 					dump.append(s.toString());				
-				}
-				dump.append(context.getElementSeparator());
+				}				
 			}
+			dump.append(context.getElementSeparator());
 		}
 		if (dump.length() == 0) {
 			return EMPTY_STRING;
@@ -365,6 +365,10 @@ public class Segment implements Iterable<X12Element> {
 		dump.append(this.getElements().get(0));
 		dump.append(">");
 		return dump.toString();
+	}
+
+	public int length() {
+		return toString().length();
 	}
 
 }

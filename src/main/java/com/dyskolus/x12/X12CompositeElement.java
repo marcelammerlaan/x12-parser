@@ -39,12 +39,16 @@ public class X12CompositeElement implements X12Element,Iterable<X12Element> {
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		Character sep = null;
+		StringBuilder sep = new StringBuilder();
 		for(X12Element ele : this.getElements()) {
-			if(sep != null) sb.append(sep);
-			sb.append(ele.toString());
 			
-			sep = ctx.getCompositeElementSeparator();
+			if(ele != null) {
+				sb.append(sep);
+				sep = new StringBuilder();
+				sb.append(ele.toString());
+			}
+				
+			sep.append(ctx.getCompositeElementSeparator());
 		}
 		return sb.toString();
 	}
